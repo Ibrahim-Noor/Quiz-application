@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,12 +21,16 @@ import Models.Question;
 import Models.Quiz;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
+import javafx.stage.Stage;
 
 public class AddQuizFXMLController implements Initializable {
 	
@@ -54,10 +59,10 @@ public class AddQuizFXMLController implements Initializable {
     private JFXTextField option4;
 
     @FXML
-    private JFXRadioButton radioRightAnswer1;
-
-    @FXML
     private ToggleGroup rightanswer;
+    
+    @FXML
+    private JFXRadioButton radioRightAnswer1;
 
     @FXML
     private JFXRadioButton radioRightAnswer2;
@@ -82,6 +87,14 @@ public class AddQuizFXMLController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
 		renderTreeView();
+		bindFields();
+	}
+	
+	private void bindFields() {
+		radioRightAnswer1.textProperty().bind(this.option1.textProperty());
+		radioRightAnswer2.textProperty().bind(this.option2.textProperty());
+		radioRightAnswer3.textProperty().bind(this.option3.textProperty());
+		radioRightAnswer4.textProperty().bind(this.option4.textProperty());
 	}
 	
 	private void renderTreeView(){
@@ -232,5 +245,19 @@ public class AddQuizFXMLController implements Initializable {
     		}    		
     	}
     }
+    
+    public void logOut() {
+		Parent root;
+		try {
+			root = FXMLLoader.load(getClass().getResource("/application/StartPage.fxml"));
+			Stage stage = (Stage)quizTitle.getScene().getWindow();
+			stage.setScene(new Scene(root));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+	}
 
 }

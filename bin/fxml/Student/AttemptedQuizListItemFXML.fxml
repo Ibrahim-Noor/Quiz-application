@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="item" onMouseClicked="#loadData" prefHeight="38.0" prefWidth="259.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Student.AttemptedQuizListItemFXMLController">
+   <children>
+      <Label fx:id="quiztitle" text="Label">
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </Label>
+   </children>
+   <effect>
+      <DropShadow color="WHITE" height="32.86" radius="14.942499999999999" width="28.91" />
+   </effect>
+</VBox>

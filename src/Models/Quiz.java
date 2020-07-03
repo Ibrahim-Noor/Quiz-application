@@ -19,7 +19,7 @@ public class Quiz {
 	private String quizTitle;
 	
 	public static class MetaData {
-		public static final String tableName = "quizs";
+		public static final String tableName = "QUIZZES";
 		public static final String quizID = "quiz_id";
 		public static final String quizTitle = "quiz_title";
 	}
@@ -250,6 +250,28 @@ public class Quiz {
 		return questions;
 	}
 	
+	public Integer getNumberOfQuestions() {
+		String raw  = "SELECT count(*) FROM %s WHERE %s = ?";
+		String query = String.format(raw, Question.MetaData.tableName, Question.MetaData.quizID);
+		try {
+			String connectionUrl = "jdbc:sqlite:Quiz.db";
+			System.out.println(query);
+			Class.forName("org.sqlite.JDBC");
+			Connection conn = DriverManager.getConnection(connectionUrl);
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, this.quizID);
+			ResultSet result = ps.executeQuery();
+			if(result.next()) {
+				return result.getInt(1);
+			}
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
 	
-
 }

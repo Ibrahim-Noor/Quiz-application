@@ -22,7 +22,7 @@ public class Student {
 	private Character gender;
 	
 	public static class MetaData {
-		public static final String tableName = "students";
+		public static final String tableName = "STUDENTS";
 		public static final String studentID = "student_id";
 		public static final String firstName = "first_name";
 		public static final String lastName = "last_name";

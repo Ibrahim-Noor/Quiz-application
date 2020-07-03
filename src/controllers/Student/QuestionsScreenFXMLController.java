@@ -7,14 +7,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import org.controlsfx.control.Notifications;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
+import com.sun.nio.sctp.Notification;
 
 import Models.Question;
 import Models.Quiz;
+import Models.QuizResult;
+import Models.Student;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableStringValue;
@@ -22,11 +29,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
+import listeners.NewScreenListener;
 
 public class QuestionsScreenFXMLController implements Initializable {
 	
@@ -82,12 +91,37 @@ public class QuestionsScreenFXMLController implements Initializable {
 	@FXML
 	private FlowPane quizprogress;
 	
+	
+	
+	//NON FXML FIELDS
 	private Quiz quiz;
 	private ArrayList<Question> questions;
 	private Question currentQuestion;
 	int currentindex = 0;
 	private QuestionObservable questionObservable;
 	private Map<Question, String> allAnsweredQuestions = new HashMap<Question, String>();
+	private Integer numberOfRightAnswers = 0;
+	private Student student;
+	private NewScreenListener newScreenListener;
+
+
+	//TIMER FIELDS
+	private long min, sec, hr, totalSec = 0;
+	private Timer timer = new Timer();
+
+	
+	public void setNewScreenListener(NewScreenListener newScreenListener) {
+		this.newScreenListener = newScreenListener;
+	}
+	
+	
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
 	
 	private void fetchData() {
 		if (this.quiz != null) {
@@ -95,6 +129,7 @@ public class QuestionsScreenFXMLController implements Initializable {
 			Collections.shuffle(questions);
 			renderProgressSequence();
 			setNextQuestion();
+			setTimer();
 		}
 	}
 	
@@ -149,6 +184,7 @@ public class QuestionsScreenFXMLController implements Initializable {
 			if (selectedAnswer.equals(currentQuestion.getCorrectAnswer().trim()))
 			{
 				progressSequenceFXMLController.setCircleRightColor();
+				this.numberOfRightAnswers++;
 			} else {
 				progressSequenceFXMLController.setCircleWrongColor();
 			}
@@ -174,12 +210,87 @@ public class QuestionsScreenFXMLController implements Initializable {
 	private void showSubmitQuizbtn() {
 		this.submitquizbtn.setVisible(true);
 	}
+		
+	
+	private String timeFormat(long value) {
+		if (value < 10) {
+			return ("0" + value);
+		}
+		return "" + value;
+	}
+	
+	private void convertTime() {
+		min = TimeUnit.SECONDS.toMinutes(totalSec);
+		sec = totalSec - (min * 60);
+		hr = TimeUnit.MINUTES.toHours(min);
+		min = min - (hr * 60);
+		this.time.setText(timeFormat(hr) + ":" + timeFormat(min) + ":" + timeFormat(sec));
+		totalSec--;
+	}
+	
+	private void setTimer() {
+		this.totalSec = this.questions.size() * 2;
+		TimerTask timerTask = new TimerTask() {
+			@Override
+			public void run() {
+				Platform.runLater(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						convertTime();
+						if (totalSec < 0) {
+							timer.cancel();
+							time.setText("00:00:00");
+							submitbtn(null);
+							Notifications.create()
+							.darkStyle().title("Time UP")
+							.text("Time Up!!!!!!")
+							.position(Pos.CENTER).showInformation();
+						}
+					}
+				});
+				// TODO Auto-generated method stub
+				
+			}
+		};
+		timer.schedule(timerTask, 0, 1000);
+	}
 	
 	public void submitbtn(ActionEvent ev) {
+		timer.cancel();
 		System.out.println(this.allAnsweredQuestions);
+		QuizResult quizResult = new QuizResult(this.quiz, this.student, numberOfRightAnswers);
+		boolean result = quizResult.save(this.allAnsweredQuestions);
+		if (result) {
+			Notifications.create()
+			.darkStyle().title("Success")
+			.text("Quiz Submitted")
+			.position(Pos.CENTER).showInformation();
+			openResultScreen();
+		} else {
+			Notifications.create()
+			.darkStyle().title("Failure")
+			.text("Quiz could not be submitted")
+			.position(Pos.CENTER).showError();
+		}
 	}
 		
-		
+	private void openResultScreen() {
+		FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/fxml/Student/QuizResultFXML.fxml"));
+		Node node;
+		try {
+			node = fxmlloader.load();
+			QuizResultFXMLController quizResultFXMLController = fxmlloader.getController();
+			quizResultFXMLController.setValues(this.allAnsweredQuestions, 
+					this.numberOfRightAnswers, this.quiz, this.questions);
+			this.newScreenListener.RemoveTopScreen();
+			this.newScreenListener.ChangeScreen(node);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	private void setNextQuestion() {
 		if (!(this.currentindex >= this.questions.size())) {

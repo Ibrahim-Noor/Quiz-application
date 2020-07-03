@@ -11,7 +11,9 @@ import java.util.ResourceBundle;
 import com.jfoenix.controls.JFXTabPane;
 
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Tab;
+import javafx.stage.Stage;
 
 public class AdminHomeScreenFXMLController implements Initializable{
 	@FXML
@@ -26,7 +28,6 @@ public class AdminHomeScreenFXMLController implements Initializable{
 		try {
 			Parent addQuiz = FXMLLoader.load(getClass().getResource("/fxml/AddQuizFXML.fxml"));
 			addquiztab.setContent(addQuiz);
-			
 			Parent addStudent = FXMLLoader.load(getClass().getResource("/fxml/AdminStudentTabFXML.fxml"));
 			addstudenttab.setContent(addStudent);
 		} catch (IOException e) {

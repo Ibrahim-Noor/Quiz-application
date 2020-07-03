@@ -8,6 +8,7 @@ import java.util.Set;
 import com.jfoenix.controls.JFXButton;
 
 import Models.Quiz;
+import Models.Student;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,16 @@ public class QuizCardFXMLController implements Initializable {
 	
 	private Quiz quiz;
 	
+	private Student student;
+	
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
 	public void setQuiz(Quiz quiz) {
 		this.quiz = quiz;
 		System.out.println("quizcard");
@@ -59,6 +70,8 @@ public class QuizCardFXMLController implements Initializable {
 			Node node = fxmlloader.load();
 			QuestionsScreenFXMLController questionsScreenFXMLController = fxmlloader.getController();
 			questionsScreenFXMLController.setQuiz(this.quiz);
+			questionsScreenFXMLController.setStudent(this.student);
+			questionsScreenFXMLController.setNewScreenListener(this.newScreenListener);
 			this.newScreenListener.ChangeScreen(node);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

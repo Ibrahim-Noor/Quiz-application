@@ -17,7 +17,7 @@ public class Question {
 	
 	
 	public static class MetaData {
-		public static final String tableName = "questions";
+		public static final String tableName = "QUESTIONS";
 		public static final String quizID = "quiz_id";
 		public static final String questionID = "id";
 		public static final String question = "question";

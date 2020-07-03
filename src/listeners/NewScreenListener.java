@@ -7,5 +7,6 @@ import javafx.scene.Node;
 public interface NewScreenListener extends EventHandler<Event>{
 	
 	public void ChangeScreen(Node node);
+	public void RemoveTopScreen();
 	
 }

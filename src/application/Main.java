@@ -2,6 +2,8 @@ package application;
 	
 import Models.Question;
 import Models.Quiz;
+import Models.QuizResult;
+import Models.QuizResultDetails;
 import Models.Student;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -33,5 +35,7 @@ public class Main extends Application {
 		Quiz.createTable();
 		Question.createTable();
 		Student.createTable();
+		QuizResult.createTable();
+		QuizResultDetails.createTable();
 	}
 }

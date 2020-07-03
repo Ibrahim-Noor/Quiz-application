@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import Models.Quiz;
+import Models.Student;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,13 +18,22 @@ public class QuizListFXMLController implements Initializable {
 	@FXML
 	private FlowPane quizlistcontainer;
 	private NewScreenListener newScreenListener;
-	Map<Quiz, Integer> quizesWithQuestionCount;
-	Set<Quiz> keys;
+	private Map<Quiz, Integer> quizesWithQuestionCount;
+	private Set<Quiz> keys;
+	private Student student;
 	
 	
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+		renderQuizCard();
+	}
+
 	public void setNewScreenListener(NewScreenListener newScreenListener) {
 		this.newScreenListener = newScreenListener;
-		renderQuizCard();
 	}
 	
 	public void renderQuizCard() {
@@ -32,6 +42,7 @@ public class QuizListFXMLController implements Initializable {
 				FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/fxml/Student/QuizCardFXML.fxml"));
 				Node node = fxmlloader.load();
 				QuizCardFXMLController quizCardFXMLController = fxmlloader.getController();
+				quizCardFXMLController.setStudent(this.student);
 				System.out.println(quizCardFXMLController);
 				System.out.println(q.getQuizTitle());
 				quizCardFXMLController.setQuiz(q);

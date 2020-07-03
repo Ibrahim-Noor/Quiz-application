@@ -1,11 +1,11 @@
 package controllers.Student;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 
+import Models.Student;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -15,18 +15,28 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import listeners.NewScreenListener;
 
-public class StudentMainScreenFXMLController implements Initializable{
+public class StudentQuizListScreenFXMLController implements Initializable{
 	
 	@FXML
 	private JFXButton backbtn;
 	
 	@FXML
 	private StackPane quizliststackpane;
+	
+	private Student student;
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+		addquizlistscreen();
+	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// TODO Auto-generated method stub
-		addquizlistscreen();
 	}
 	
 	private void addScreen(Node node) {
@@ -51,7 +61,15 @@ public class StudentMainScreenFXMLController implements Initializable{
 					// TODO Auto-generated method stub
 					addScreen(node);
 				}
+
+				@Override
+				public void RemoveTopScreen() {
+					quizliststackpane.getChildren().remove(quizliststackpane.getChildren().size()-1);
+					// TODO Auto-generated method stub
+					
+				}
 			});
+			quizListFXMLController.setStudent(this.student);
 			quizliststackpane.getChildren().add(node);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
